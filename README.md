@@ -55,6 +55,4 @@ In a production environment, it is recommended to run a flask application via Ap
 - All the 'print' messages in the app will go to Apache logs.
 
 ## 6. Roadmap
-- Delete jobs older than 60 days.
-- Cleanup jobs if deleted from source site(s).
-- Email and/or RSS Subscription.
+[Roadmap](./roadmap.md)
