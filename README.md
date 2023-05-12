@@ -26,6 +26,11 @@ cp localenv.py.example localenv.py
 APIKEY_SENDINBLUE="YOURSENDINBLUEAPIKEY"
 ```
 
+- Mandatory: Edit the value of FLASK_SECRET_KEY:
+```
+FLASK_SECRET_KEY="ANYSECRET"
+```
+
 - Install application pre-req packages: ```pip3 install -r requirements.txt```
 - Update email recipient details in [contactus.py](./contactus.py).
 

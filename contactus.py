@@ -38,7 +38,7 @@ def uiform():
         #app-config
         emailsubject = "Flask App"
         recipientname = "VN"
-        recipientemail = "vig.indian@gmail.com"
+        recipientemail = localenv.CONTACT
 
         sendEmailRC = sendEmail(emailsubject, senderemail_sub, recipientemail, recipientname, message_sub)
         if (sendEmailRC):

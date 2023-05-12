@@ -11,7 +11,10 @@ SQLITE_DATABASE="sqlite_remotejobs.db"
 SQLITE_TABLE="jobdetails"
 
 #your email
-CONTACT="vigindian@gmail.com"
+CONTACT="dummyemail@dummyexample.com"
+
+#flask secret-key
+FLASK_SECRET_KEY=""
 
 #send-in-blue api key to send email
 APIKEY_SENDINBLUE=""
