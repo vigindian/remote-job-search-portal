@@ -1,0 +1,98 @@
+#debug flag for the application
+#DEBUG_MODE=True
+DEBUG_MODE=False
+
+#job search keyword
+SEARCH_KEYWORD="devops"
+JOB_DETAILS=False #not-used for now
+
+#sqlite parameters
+SQLITE_DATABASE="sqlite_remotejobs.db"
+SQLITE_TABLE="jobdetails"
+
+#your email
+CONTACT="vigindian@gmail.com"
+
+#send-in-blue api key to send email
+APIKEY_SENDINBLUE=""
+
+#list of job sites with their properties
+JOB_SITES = {
+  "jobsites": [
+    {
+      "url": "https://remotesoftwareengineeringjobs.com",
+      "urlfilter": "?tech=KEYWORD&location=Worldwide",
+      "htmltype": "class",
+      "htmlfilter": "app-container",
+      "resultsfilter": None,
+      "extendPath": False,
+      "enabled": True
+    },
+    {
+      "url": "https://remoteok.com",
+      "urlfilter": "remote-KEYWORD-jobs?location=Worldwide",
+      "htmltype": "table",
+      "htmlfilter": "jobsboard",
+      "resultsfilter": None,
+      "extendPath": True,
+      "enabled": True 
+    },
+    { 
+      "url": "https://ops-jobs.com",
+      "urlfilter": "?search_keywords=KEYWORD&search_location=Remote(World)",
+      "htmltype": "section", 
+      "htmlfilter": "job-posting-section",
+      "resultsfilter": None,
+      "extendPath": False,
+      "enabled": True 
+    },
+    #data retrieval from this method does not work
+    {
+      "url": "https://www.workingnomads.com",
+      "urlfilter": "jobs?location=anywhere&tag=KEYWORD",
+      "htmltype": "class",
+      "htmlfilter": "jobs-list",
+      "resultsfilter": None,
+      "extendPath": False,
+      "enabled": True
+    },
+    {
+      "url": "https://weworkremotely.com",
+      "urlfilter": "remote-jobs/search?term=KEYWORD&sort=any_time&region[]=0",
+      "htmltype": "class",
+      "htmlfilter": "jobs-container",
+      "resultsfilter": "remote-jobs",
+      "extendPath": True,
+      "enabled": True
+    },
+    {
+      "url": "https://remote.co",
+      #"urlfilter": "remote-jobs/search/?search_keywords=KEYWORD",
+      "urlfilter": "international-remote-jobs/",
+      "htmltype": "class",
+      #"htmlfilter": "job_listings",
+      "htmlfilter": "container pt-4",
+      "resultsfilter": "/job/",
+      "extendPath": True,
+      "enabled": True
+    },
+    {
+      "url": "https://trulyremote.co",
+      "urlfilter": "?search=KEYWORD",
+      #"htmltype": "class",
+      #"htmlfilter": "font-body"
+      "htmltype": "script",
+      "htmlfilter": "__NEXT_DATA__",
+      "resultsfilter": None,
+      "extendPath": False,
+      "enabled": True 
+    },
+  ]
+}
+
+#pandas output formatting
+OUTPUT_FORMAT = '''
+                    <style>
+                         .df th { background-color: lightgray; text-align: center }
+                    </style>
+                '''

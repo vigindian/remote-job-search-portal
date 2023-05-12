@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div id="loading"></div>
+    <div id="content">
+    <h3>Remote Jobs</h3>
+    <br>
+    <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}
+
+        <p>
+	    {% for subfield in form.type1 %}
+            <tr>
+              <td>{{ subfield }}</td>
+	      <td>{{ subfield.label }}</td>&nbsp;&nbsp;
+            </tr>
+            {% endfor %}
+            {% for error in form.type1.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        
+	<p>
+	    <!--
+            {{ form.environment.label }}<br>
+            {{ form.environment(size=32) }}
+	    -->
+	    {% for subfield in form.environment %}
+            <tr>
+              <td>{{ subfield }}</td>
+              <td>{{ subfield.label }}</td>&nbsp;&nbsp;
+            </tr>
+            {% endfor %}
+	    {% for error in form.environment.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        
+	<p>
+	    {{ form.dataid.label }}<br>
+            {{ form.dataid(size=14,title='Internal ID', data_toggle='tooltip') }}
+	    <!--
+            {{ form.dataid(size=12) }}
+	    -->
+	    {% for error in form.dataid.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+	
+	<p>
+            {{ form.From.label }}<br>
+            {{ form.From(size=16,title='Date within 13 months', data_toggle='tooltip') }}
+
+            <!--
+	    <input type="datetime-local" id="From" name="From" value="2021-08-01 00:00" min="2021-08-01 23:59" size=16>
+	    -->
+
+	    {% for error in form.From.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+	
+	<p>
+            {{ form.To.label }}<br>
+            {{ form.To(size=16,title='Time-range less than 2-weeks', data_toggle='tooltip') }}
+	    {% for error in form.To.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        
+	<p>
+	    {{ form.status() }} {{ form.status.label }}
+	    {% for error in form.status.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        
+        <input type="submit" name="submit_remotejobs" value="Submit" onclick="loading();">
+    </form>
+    {% if output %}
+      <p>Results: {{ output }}</p>
+    {% endif %}
+    <br>
+    </div>
+{% endblock %}

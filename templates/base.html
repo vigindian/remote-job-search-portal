@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+    <head>
+      {% if title %}
+      <title>{{ title }}: Remote Jobs</title>
+      {% else %}
+      <title>Remote Jobs</title>
+      {% endif %}
+
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.0/css/bootstrap.min.css">
+      <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+      <script type="text/javascript" src="../static/js/loader.js"></script>
+
+      <div style="float: left">
+        <a href="/home/">
+            <img src="{{url_for('static', filename='images/flask-logo.png')}}" align="left" width="90" length="90" alt="RemoteJobs"/>
+        </a>
+      </div>
+      <div style="float: right">
+        <p style="text-align:right;">{{ user }}</p>
+      </div>
+      <div style="margin: 0 auto; width: 300px;">
+	<h4 align="center">Remote Jobs</h4>
+      </div>
+      <br>
+    </head>
+    <body id="sample">
+        <div>
+		<a href="/remotejobsui/" style="text-decoration:none;">Remote Jobs</a> |
+		<a href="/contactus/" style="text-decoration:none;">Feedback</a>
+	</div>
+        <hr>
+	{% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <ul>
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+	{% block content %}
+	{% endblock %}
+        <footer>
+          <p><a href="mailto:{{ appcontact }}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;">Email</a></p>
+        </footer>
+    </body>
+</html>

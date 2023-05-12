@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div id="loading"></div>
+    <div id="content">
+    <h3>Get in touch </h3>
+    <br>
+    <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}
+        
+        <p>
+            {{ form.name.label }}<br>
+            {{ form.name(size=16) }}
+            {% for error in form.name.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+
+        <p>
+            {{ form.senderemail.label }}<br>
+            {{ form.senderemail(size=16) }}
+            {% for error in form.senderemail.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+
+	<p>
+            {{ form.message.label }}<br>
+            <textarea name="message" type="text" placeholder="Your feedback" rows="6" columns="80"></textarea>
+            {% for error in form.message.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+          </p>
+
+        <input type="submit" name="submit_contactus" value="Submit" onclick="loading();">
+    </form>
+    <br>
+    {% if output %}
+      <p>Results: {{ output }}</p>
+    {% endif %}
+    </div>
+{% endblock %}

@@ -1,0 +1,6 @@
+debug.log
+sample*
+*.db
+*.bak
+localenv.py
+*.swp
