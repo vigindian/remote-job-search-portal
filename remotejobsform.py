@@ -28,6 +28,11 @@ httpRCsvr=500
 
 devopsContact=localenv.CONTACT
 
+try:
+  buyMeCoffee = str(localenv.BUY_ME_COFFEE_URL).split("/")[-1]
+except:
+  buyMeCoffee=None
+
 @remotejobsui.route('/', methods=['GET', 'POST'])
 def uiform():
     username = getUsername()
@@ -41,10 +46,11 @@ def uiform():
         #formOutput = get_job_list(keyword_sub, job_details) #redo job-scraping
         formOutput = search_job_list(keyword_sub) #search from sqlite-db
 
-        return render_template('remotejobs.html', title='Remote Jobs', user=username, form=form, output=formOutput, appcontact=devopsContact)
+        return render_template('remotejobs.html', title='Remote Jobs', user=username, form=form, output=formOutput, appcontact=devopsContact, buyMeCoffee=buyMeCoffee)
     else:
         #formOutput = get_job_list(None, job_details)
         formOutput = show_job_list() #search from sqlite-db
-        return render_template('remotejobs.html', title='Remote Jobs', user=username, form=form, output=formOutput, appcontact=devopsContact)
 
-    return render_template('remotejobs.html', title='Remote Jobs', user=username, form=form, output=formOutput, appcontact=devopsContact)
+        return render_template('remotejobs.html', title='Remote Jobs', user=username, form=form, output=formOutput, appcontact=devopsContact, buyMeCoffee=buyMeCoffee)
+
+    return render_template('remotejobs.html', title='Remote Jobs', user=username, form=form, output=formOutput, appcontact=devopsContact, buyMeCoffee=buyMeCoffee)

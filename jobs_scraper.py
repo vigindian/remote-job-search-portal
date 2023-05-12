@@ -354,9 +354,32 @@ def html_format_output(inputdf):
 
   #css style
   outputFormat = localenv.OUTPUT_FORMAT
-  outputdf = HTML(outputFormat + inputdf.to_html(classes='df', render_links=True, escape=False, index=False))
+  #dfOutput = HTML(outputFormat + inputdf.to_html(classes='df', render_links=True, escape=False, index=False))
+  dfOutput = outputFormat + inputdf.to_html(classes='df', table_id="table", render_links=True, escape=False, index=False)
 
-  return outputdf
+  htmlOutput = f"""
+    <html>
+    <header>
+        <link href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css" rel="stylesheet">
+    </header>
+    <body>
+    {dfOutput}
+    <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready( function () {{
+            $('#table').DataTable({{
+                 paging: true,
+                 scrollY: 360,
+            }});
+        }});
+    </script>
+    </body>
+    </html>
+  """
+
+    #<footer><p>check this out</p></footer>
+  return HTML(htmlOutput)
 
 def search_job_list(searchKeyword: str):
   jobDetails = {}

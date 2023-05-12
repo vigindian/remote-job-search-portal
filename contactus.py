@@ -22,6 +22,11 @@ httpRCsvr=500
 
 appcontact=localenv.CONTACT
 
+try:
+  buyMeCoffee = str(localenv.BUY_ME_COFFEE_URL).split("/")[-1]
+except:
+  buyMeCoffee=None
+
 #Contact Form
 @contactusui.route('/', methods=['GET', 'POST'])
 def uiform():
@@ -47,6 +52,6 @@ def uiform():
           contactusOutput = "Sorry, message sending failed. Please try again later. Thank you."
 
         #return redirect(url_for('home'))
-        return render_template('contactus.html', title='Get in touch', user=username, form=form, output=contactusOutput, appcontact=appcontact)
+        return render_template('contactus.html', title='Get in touch', user=username, form=form, output=contactusOutput, appcontact=appcontact, buyMeCoffee=buyMeCoffee)
 
-    return render_template('contactus.html', title='Get in touch', user=username, form=form, appcontact=appcontact)
+    return render_template('contactus.html', title='Get in touch', user=username, form=form, appcontact=appcontact, buyMeCoffee=buyMeCoffee)

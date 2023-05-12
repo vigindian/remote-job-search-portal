@@ -18,8 +18,13 @@
         </a>
       </div>
       <div style="float: right">
+        <p style="text-align:right;"><a href="mailto:{{ appcontact }}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;">Email</a></p>
+      </div>
+      <!--
+      <div style="float: right">
         <p style="text-align:right;">{{ user }}</p>
       </div>
+      -->
       <div style="margin: 0 auto; width: 300px;">
 	<h4 align="center">Remote Job Search Engine</h4>
       </div>
@@ -43,7 +48,15 @@
 	{% block content %}
 	{% endblock %}
         <footer>
+          <!--
           <p><a href="mailto:{{ appcontact }}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;">Email</a></p>
+          {% if buyMeCoffee %}
+            <p><a href="{{ buyMeCoffee }}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;">Support Me</a></p>
+          {% endif %}
+          -->
         </footer>
+        {% if buyMeCoffee %}
+        <script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="{{ buyMeCoffee }}" data-description="Support me on Buy me a coffee!" data-message="" data-color="#5F7FFF" data-position="Right" data-x_margin="6" data-y_margin="3"></script>
+        {% endif %}
     </body>
 </html>

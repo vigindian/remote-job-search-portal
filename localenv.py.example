@@ -103,3 +103,5 @@ OUTPUT_FORMAT = '''
                          .df th { background-color: lightgray; text-align: center }
                     </style>
                 '''
+
+#BUY_ME_COFFEE_URL="https://www.buymeacoffee.com/lostusmanifest"
