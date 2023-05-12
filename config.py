@@ -7,7 +7,7 @@ class Config(object):
     SECRET_KEY = os.environ.get('SECRET_KEY') or localenv.FLASK_SECRET_KEY
 
     #flask-debug: also enables auto-reload for local file changes
-    DEBUG = True
+    DEBUG = localenv.FLASK_DEBUG
 
     #pretty-print json output
-    JSONIFY_PRETTYPRINT_REGULAR = True
+    JSONIFY_PRETTYPRINT_REGULAR = localenv.FLASK_JSON_PRETTYPRINT

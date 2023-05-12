@@ -13,6 +13,10 @@ SQLITE_TABLE="jobdetails"
 #your email
 CONTACT="dummyemail@dummyexample.com"
 
+#flask parameters
+FLASK_DEBUG=True
+#pretty-print json output
+FLASK_JSON_PRETTYPRINT=True
 #flask secret-key
 FLASK_SECRET_KEY=""
 
