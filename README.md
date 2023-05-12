@@ -3,7 +3,7 @@
 ## 1. Overview
 This is a free remote job search engine portal, that collects remote software jobs from various job sites and presents in one portal.
 
-- scrapes different job sites in JOB_SITES [localenv](./localenv.py).
+- scrapes different job sites in JOB_SITES, as per localenv.py.
 - collects job details and stores it in local sqlite db.
 - the portal presents data from sqlite db.
 - the job-scraping script is run on a regular basis in the backend server, to refresh the jobs.
