@@ -4,7 +4,9 @@ body  {
   */
   padding: 6px;
   background-color: white;
+  font-family: Verdana;
   color: black;
+  font-size: 15px;
 }
 
 #sample {
