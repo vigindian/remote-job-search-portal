@@ -3,29 +3,9 @@
 {% block content %}
     <div id="loading"></div>
     <div id="content">
-    <!--<h3>Remote Jobs</h3>-->
     {% if output %}
       <p>{{ output }}</p>
     {% endif %}
     <br>
-
-    <!--
-    <form action="" method="post" novalidate>
-      {{ form.hidden_tag() }}
-      <p>
-          {{ form.searchkeyword(size=16,title='Search Keyword', data_toggle='tooltip') }}
-          {% for error in form.searchkeyword.errors %}
-          <span style="color: red;">[{{ error }}]</span>
-          {% endfor %}
-          <input type="submit" name="submit_remotejobs" value="Submit" onclick="loading();">
-      </p>
-    
-      {% if output %}
-        <p>{{ output }}</p>
-      {% endif %}
-      <br>
-    </form>
-    -->
-
     </div>
 {% endblock %}

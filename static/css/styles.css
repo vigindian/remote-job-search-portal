@@ -1,7 +1,10 @@
 body  {
   /*background-color: #DAF7A6;
-  background-image: url("/static/tn-background.svg");
+  background-image: url("/static/background.svg");
   */
+  padding: 6px;
+  background-color: white;
+  color: black;
 }
 
 #sample {

@@ -29,7 +29,7 @@ application = app
 app.config.from_object(Config)
 
 #sample ui-form
-app.register_blueprint(remotejobsui, url_prefix='/remotejobsui')
+app.register_blueprint(remotejobsui, url_prefix='/remotejobs')
 
 #contactus
 app.register_blueprint(contactusui, url_prefix='/contactus')
@@ -55,13 +55,15 @@ except:
 
 @app.route('/')
 def redirecthome():
-    return redirect(url_for('home'))
+    #return redirect(url_for('home'))
+    return redirect(url_for('remotejobsui.uiform'))
 
 #redirection for home
 @app.route('/home/')
 def home():
-    username = getUsername()
-    return render_template('index.html', title='Home', user=username, appcontact=devopsContact, buyMeCoffee=buyMeCoffee)
+    #username = getUsername()
+    #return render_template('index.html', title='Home', user=username, appcontact=devopsContact, buyMeCoffee=buyMeCoffee)
+    return redirect(url_for('remotejobsui.uiform'))
 
 @app.errorhandler(404)
 def page_not_found(e):

@@ -48,7 +48,7 @@ def get_urltext(url):
 @simple_time_tracker(_log)
 #remove special characters
 def clean_data(source_data: str):
-  cleandata1 = (re.sub(r'[^a-zA-Z0-9\s]+', '', source_data)).replace("\n","").strip()
+  cleandata1 = (re.sub(r'[^a-zA-Z0-9\s]+', '', source_data)).replace("\n","").replace("Remoteco","").strip()
   cleandata = ' '.join(cleandata1.split()) #remove additional white-space
   return cleandata
 
@@ -117,7 +117,7 @@ def sqlite_job_exists(thisconnection: sqlite3.connect, table: str, url: str, job
     #insert into sqlite if job does not exist
     if not joburlexists:
       print("Job does not exist in db")
-      jobAddedOn = datetime.today().strftime('%Y-%m-%d')
+      jobAddedOn = datetime.today().strftime('%Y-%m-%d %H:%M')
       newValue = [url, jobname, jobAddedOn]
       c.execute("INSERT INTO "+ str(table)+ " VALUES(?,?,?)", newValue)
       thisconnection.commit()
@@ -348,38 +348,17 @@ def get_job_list(searchKeyword: str, moreDetails: bool):
   df = pd.DataFrame(allJobDetailsOutput)
   return df
 
-def html_format_output(inputdf):
+def html_format_output(dfInput):
   #sort values in descending order based on job-added-date
-  inputdf.sort_values(by='jobaddedon', ascending = False, inplace = True)
+  dfInput.sort_values(by='jobaddedon', ascending = False, inplace = True)
 
   #css style
   outputFormat = localenv.OUTPUT_FORMAT
-  #dfOutput = HTML(outputFormat + inputdf.to_html(classes='df', render_links=True, escape=False, index=False))
-  dfOutput = outputFormat + inputdf.to_html(classes='df', table_id="table", render_links=True, escape=False, index=False)
+  #dfOutput = HTML(outputFormat + dfInput.to_html(classes='df', render_links=True, escape=False, index=False))
+  #output-format after table for javascript formatting; add <link href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css" rel="stylesheet"> to base.html
+  dfOutput = dfInput.to_html(classes='df', table_id="table", render_links=True, escape=False, index=False) + outputFormat
 
-  htmlOutput = f"""
-    <html>
-    <header>
-        <link href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css" rel="stylesheet">
-    </header>
-    <body>
-    {dfOutput}
-    <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
-    <script>
-        $(document).ready( function () {{
-            $('#table').DataTable({{
-                 paging: true,
-                 scrollY: 360,
-            }});
-        }});
-    </script>
-    </body>
-    </html>
-  """
-
-    #<footer><p>check this out</p></footer>
-  return HTML(htmlOutput)
+  return HTML(dfOutput)
 
 def search_job_list(searchKeyword: str):
   jobDetails = {}

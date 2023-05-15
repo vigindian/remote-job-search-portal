@@ -1,5 +1,5 @@
 <!doctype html>
-<html>
+<html lang="en">
     <head>
       {% if title %}
       <title>{{ title }}: Remote Job Search Engine</title>
@@ -9,32 +9,26 @@
 
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.0/css/bootstrap.min.css">
       <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+      <!--jquery.dataTables.min.css needed for js table-formatting-->
+      <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+
+      <!--jquery.min.js needed for loader-gif after submit-->
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
       <script type="text/javascript" src="../static/js/loader.js"></script>
 
       <div style="float: left">
-        <a href="/home/">
+        <a href="/remotejobs/">
             <img src="{{url_for('static', filename='images/flask-logo.png')}}" align="left" width="90" length="90" alt="RemoteJobs"/>
         </a>
       </div>
       <div style="float: right">
-        <p style="text-align:right;"><a href="mailto:{{ appcontact }}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;">Email</a></p>
+        <a href="/contactus/" style="text-decoration:none;">Feedback</a>
       </div>
-      <!--
-      <div style="float: right">
-        <p style="text-align:right;">{{ user }}</p>
-      </div>
-      -->
       <div style="margin: 0 auto; width: 300px;">
 	<h4 align="center">Remote Job Search Engine</h4>
       </div>
-      <br>
     </head>
     <body id="sample">
-        <div>
-		<a href="/remotejobsui/" style="text-decoration:none;">Remote Jobs</a> |
-		<a href="/contactus/" style="text-decoration:none;">Feedback</a>
-	</div>
         <hr>
 	{% with messages = get_flashed_messages() %}
         {% if messages %}
@@ -47,14 +41,11 @@
         {% endwith %}
 	{% block content %}
 	{% endblock %}
+
         <footer>
-          <!--
-          <p><a href="mailto:{{ appcontact }}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;">Email</a></p>
-          {% if buyMeCoffee %}
-            <p><a href="{{ buyMeCoffee }}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;">Support Me</a></p>
-          {% endif %}
-          -->
+          <a href="https://github.com/vigindian/remote-job-search-portal#readme" target="_blank" rel="noopener noreferrer" style="text-decoration:none;">Doco</a>
         </footer>
+
         {% if buyMeCoffee %}
         <script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="{{ buyMeCoffee }}" data-description="Support me on Buy me a coffee!" data-message="" data-color="#5F7FFF" data-position="Right" data-x_margin="6" data-y_margin="3"></script>
         {% endif %}
