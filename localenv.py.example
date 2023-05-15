@@ -61,7 +61,7 @@ JOB_SITES = {
       "htmlfilter": "jobs-list",
       "resultsfilter": None,
       "extendPath": False,
-      "enabled": True
+      "enabled": False
     },
     {
       "url": "https://weworkremotely.com",
@@ -102,6 +102,18 @@ OUTPUT_FORMAT = '''
                     <style>
                          .df th { background-color: lightgray; text-align: center }
                     </style>
+                    <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
+                    <script type="text/javascript" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+                    <script>
+                      $(document).ready(function () {
+                        $('#table').DataTable({
+                          paging: true,
+                          //scrollY: 375,
+                          order: [[2, 'desc']],
+                          stateSave: true, //saves the state of a table (its paging position, ordering state etc). Uses HTML5 localStorage and sessionStorage.
+                        });
+                      });
+                    </script>
                 '''
 
 #BUY_ME_COFFEE_URL="https://www.buymeacoffee.com/lostusmanifest"
