@@ -4,3 +4,4 @@ sample*
 *.bak
 localenv.py
 *.swp
+.DS_Store
