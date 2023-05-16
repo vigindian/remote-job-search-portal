@@ -54,7 +54,7 @@ python3 app.py
 ## 5. Apache WSGI Setup
 In a production environment, it is recommended to run a flask application via Apache or a similar application:
 - Install and configure apache.
-- Install the Apache WSGI module.
+- Install the Apache WSGI module. In Debian, you can install it with the command ```apt-get install libapache2-mod-wsgi-py3```.
 - [apache_flaskapp.conf.sample](apache_flaskapp.conf.sample): sample apache wsgi config to run this flask-app.
 - This app uses a test user to show the authenticated user in app UI. You can get Apache to pass the REMOTE_USER variable to the app, which can be shown in the UI.
 - All the 'print' messages in the app will go to Apache logs.
