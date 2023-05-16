@@ -92,7 +92,8 @@ def sqlite_exec_query_read(thisconnection: sqlite3.connect, query: str):
 
     c.execute(query)
 
-    df = pd.DataFrame(c.fetchall(), columns=['joburl','jobname','jobaddedon', 'location'])
+    df = pd.DataFrame(c.fetchall(), columns=['joburl','jobname','jobaddedon','location'])
+    df = df[['joburl','jobname','location','jobaddedon']] #re-arrange the columns
     #print (df)
 
     RC = True

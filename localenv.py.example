@@ -110,7 +110,7 @@ OUTPUT_FORMAT = '''
                         $('#table').DataTable({
                           paging: true,
                           //scrollY: 375,
-                          order: [[2, 'desc']],
+                          order: [[3, 'desc']], //sort-by-job-added-time
                           stateSave: true, //saves the state of a table (its paging position, ordering state etc). Uses HTML5 localStorage and sessionStorage.
                         });
                       });
