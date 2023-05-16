@@ -41,8 +41,8 @@ def uiform():
         message_sub = form.message.data
 
         #app-config
-        emailsubject = "Flask App"
-        recipientname = "VN"
+        emailsubject = "Remote Jobs Search Engine"
+        recipientname = localenv.CONTACTNAME
         recipientemail = localenv.CONTACT
 
         sendEmailRC = sendEmail(emailsubject, senderemail_sub, recipientemail, recipientname, message_sub)

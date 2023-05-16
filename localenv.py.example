@@ -10,7 +10,8 @@ JOB_DETAILS=False #not-used for now
 SQLITE_DATABASE="sqlite_remotejobs.db"
 SQLITE_TABLE="jobdetails"
 
-#your email
+#your name and email
+CONTACTNAME="dummyname"
 CONTACT="dummyemail@dummyexample.com"
 
 #flask parameters
