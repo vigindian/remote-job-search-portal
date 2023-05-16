@@ -92,7 +92,7 @@ def sqlite_exec_query_read(thisconnection: sqlite3.connect, query: str):
 
     c.execute(query)
 
-    df = pd.DataFrame(c.fetchall(), columns=['joburl','jobname','jobaddedon'])
+    df = pd.DataFrame(c.fetchall(), columns=['joburl','jobname','jobaddedon', 'location'])
     #print (df)
 
     RC = True
@@ -102,7 +102,7 @@ def sqlite_exec_query_read(thisconnection: sqlite3.connect, query: str):
 
   return df, RC
 
-def sqlite_job_exists(thisconnection: sqlite3.connect, table: str, url: str, jobname: str):
+def sqlite_job_exists(thisconnection: sqlite3.connect, table: str, url: str, jobname: str, joblocation: str):
   """ check if given URL exists in given SQLite table """
   RC = False
   jobExistsRC = False
@@ -118,7 +118,7 @@ def sqlite_job_exists(thisconnection: sqlite3.connect, table: str, url: str, job
     if not joburlexists:
       print("Job does not exist in db")
       jobAddedOn = datetime.today().strftime('%Y-%m-%d %H:%M')
-      newValue = [url, jobname, jobAddedOn]
+      newValue = [url, jobname, jobAddedOn, joblocation]
       c.execute("INSERT INTO "+ str(table)+ " VALUES(?,?,?)", newValue)
       thisconnection.commit()
     #job already exists in db
@@ -144,7 +144,7 @@ def sqlite_prereq_setup():
     #create table
     createTable = sqlite_exec_query_write(connection, '''
           CREATE TABLE IF NOT EXISTS ''' + str(SQLITE_TABLE) +
-          '''([joburl] TEXT PRIMARY KEY, [jobname] TEXT, [jobaddedon] TEXT)
+          '''([joburl] TEXT PRIMARY KEY, [jobname] TEXT, [jobaddedon] TEXT, [location] TEXT)
           ''')
     if debugMode:
       if createTable:
@@ -177,11 +177,14 @@ def get_job_details(eachJobUrl):
 
     jobTitle = clean_data(jobTitle)
 
-    jobExistsRC, jobExistsRCCheck, jobAddedOn = sqlite_job_exists(sqliteConnection, SQLITE_TABLE, eachJobUrl, jobTitle)
+    jobLocation = clean_data("Worldwide")
+
+    jobExistsRC, jobExistsRCCheck, jobAddedOn = sqlite_job_exists(sqliteConnection, SQLITE_TABLE, eachJobUrl, jobTitle, jobLocation)
   
     jobDetails["jobUrl"] = eachJobUrl
     jobDetails["jobTitle"] = jobTitle
     jobDetails["jobAddedOn"] = jobAddedOn
+    jobDetails["jobLocation"] = jobLocation
   except:
     print("Job Details cannot be extracted")
   finally:
