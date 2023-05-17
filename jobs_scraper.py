@@ -93,7 +93,8 @@ def sqlite_exec_query_read(thisconnection: sqlite3.connect, query: str):
     c.execute(query)
 
     df = pd.DataFrame(c.fetchall(), columns=['joburl','jobname','jobaddedon','location'])
-    df = df[['joburl','jobname','location','jobaddedon']] #re-arrange the columns
+    df = df[['jobname','joburl','location','jobaddedon']] #re-arrange the columns
+    df.rename(columns={'jobname': 'Role', 'joburl': 'Source', 'location': 'Location', 'jobaddedon': 'Posted'}, inplace=True)
     #print (df)
 
     RC = True
@@ -354,7 +355,7 @@ def get_job_list(searchKeyword: str, moreDetails: bool):
 
 def html_format_output(dfInput):
   #sort values in descending order based on job-added-date
-  dfInput.sort_values(by='jobaddedon', ascending = False, inplace = True)
+  #dfInput.sort_values(by='jobaddedon', ascending = False, inplace = True) #redundant as we sort using javascript
 
   #css style
   outputFormat = localenv.OUTPUT_FORMAT
@@ -378,7 +379,7 @@ def search_job_list(searchKeyword: str):
 
   return finalOutput
 
-def show_job_list():
+def get_jobs_all():
   jobDetails = {}
 
   sqliteConnection = sqlite_prereq_setup()
@@ -386,6 +387,11 @@ def show_job_list():
     return jobDetails
 
   currentJobList, currentJobListRC = sqlite_exec_query_read(sqliteConnection, "SELECT * from " + str (SQLITE_TABLE))
+
+  return currentJobList, currentJobListRC
+
+def show_job_list():
+  currentJobList, currentJobListRC = get_jobs_all()
   df = pd.DataFrame.from_records(data = currentJobList)
 
   finalOutput = html_format_output(df)

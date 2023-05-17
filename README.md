@@ -7,6 +7,7 @@ This is a free remote job search engine portal, that collects remote software jo
 - collects job details and stores it in local sqlite db.
 - the portal presents data from sqlite db.
 - the job-scraping script is run on a regular basis in the backend server, to refresh the jobs.
+- you can subscribe to job updates via RSS subscription
 
 ## 2. Code Structure
 

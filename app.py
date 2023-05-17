@@ -14,6 +14,9 @@ from remotejobsform import remotejobsui
 #contactus
 from contactus import contactusui
 
+#rss
+from rss import rss
+
 #local-utilities
 from localutils import getUsername
 
@@ -33,6 +36,9 @@ app.register_blueprint(remotejobsui, url_prefix='/remotejobs')
 
 #contactus
 app.register_blueprint(contactusui, url_prefix='/contactus')
+
+#rss
+app.register_blueprint(rss, url_prefix='/rss')
 
 #variables
 httpRCok = 200

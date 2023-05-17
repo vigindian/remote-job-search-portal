@@ -16,13 +16,18 @@
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
       <script type="text/javascript" src="../static/js/loader.js"></script>
 
+      <!-- rss -->
+      <link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="/rss/" />
+
       <div style="float: left">
         <a href="/remotejobs/">
             <img src="{{url_for('static', filename='images/logo.png')}}" align="left" width="160" length="160" alt="RemoteJobs"/>
         </a>
       </div>
       <div style="float: right">
-        <a href="/contactus/" style="text-decoration:none;">Feedback</a>
+        <a href="/rss/" title="Subscribe">
+          <img src="{{url_for('static', filename='images/rss.png')}}" align="left" width="24" length="24" alt="RSS" style="border:0"/>
+        </a>
       </div>
       <div style="margin: 0 auto; width: 360px;">
 	<h4 align="center">Remote Job Search Engine</h4>
@@ -43,7 +48,8 @@
 	{% endblock %}
 
         <footer>
-          <a href="https://github.com/vigindian/remote-job-search-portal#readme" target="_blank" rel="noopener noreferrer" style="text-decoration:none;">Doco</a>
+          <a href="https://github.com/vigindian/remote-job-search-portal#readme" target="_blank" rel="noopener noreferrer" style="text-decoration:none;">Doco</a> | 
+          <a href="/contactus/" style="text-decoration:none;">Feedback</a>
         </footer>
 
         {% if buyMeCoffee %}
