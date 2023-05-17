@@ -7,6 +7,7 @@ import json
 import re #regex
 
 import multiprocessing as mp
+from functools import partial
 
 import sqlite3
 #from sqlite3 import Error as sqliteError
@@ -92,7 +93,7 @@ def sqlite_exec_query_read(thisconnection: sqlite3.connect, query: str):
 
     c.execute(query)
 
-    df = pd.DataFrame(c.fetchall(), columns=['joburl','jobname','jobaddedon','location'])
+    df = pd.DataFrame(c.fetchall(), columns=['joburl','jobname','jobaddedon','location','sourcename'])
     df = df[['jobname','joburl','location','jobaddedon']] #re-arrange the columns
     df.rename(columns={'jobname': 'Role', 'joburl': 'Source', 'location': 'Location', 'jobaddedon': 'Posted'}, inplace=True)
     #print (df)
@@ -104,7 +105,7 @@ def sqlite_exec_query_read(thisconnection: sqlite3.connect, query: str):
 
   return df, RC
 
-def sqlite_job_exists(thisconnection: sqlite3.connect, table: str, url: str, jobname: str, joblocation: str):
+def sqlite_job_exists(thisconnection: sqlite3.connect, table: str, url: str, jobname: str, joblocation: str, sourcename: str):
   """ check if given URL exists in given SQLite table """
   RC = False
   jobExistsRC = False
@@ -120,8 +121,8 @@ def sqlite_job_exists(thisconnection: sqlite3.connect, table: str, url: str, job
     if not joburlexists:
       print("Job does not exist in db")
       jobAddedOn = datetime.today().strftime('%Y-%m-%d %H:%M')
-      newValue = [url, jobname, jobAddedOn, joblocation]
-      c.execute("INSERT INTO "+ str(table)+ " VALUES(?,?,?)", newValue)
+      newValue = [url, jobname, jobAddedOn, joblocation, sourcename]
+      c.execute("INSERT INTO "+ str(table)+ " VALUES(?,?,?,?,?)", newValue)
       thisconnection.commit()
     #job already exists in db
     else:
@@ -146,7 +147,7 @@ def sqlite_prereq_setup():
     #create table
     createTable = sqlite_exec_query_write(connection, '''
           CREATE TABLE IF NOT EXISTS ''' + str(SQLITE_TABLE) +
-          '''([joburl] TEXT PRIMARY KEY, [jobname] TEXT, [jobaddedon] TEXT, [location] TEXT)
+          '''([joburl] TEXT PRIMARY KEY, [jobname] TEXT, [jobaddedon] TEXT, [location] TEXT, [sourcename] TEXT)
           ''')
     if debugMode:
       if createTable:
@@ -159,8 +160,39 @@ def sqlite_prereq_setup():
 
   return connection
 
+def old_job_cleanup(allJobUrls: list, retention: int):
+  """delete jobs older than given days"""
+  return True
+
+def obsolete_job_cleanup(jobSourceName: str, allJobUrls: list):
+  """cleanup obsolete job(s) that have been removed from the source sites"""
+  print("obsolete job cleanup started...")
+  print (allJobUrls)
+
+  thisSourceCleanupRC = False
+
+  sqliteConnection = sqlite_prereq_setup()
+  if sqliteConnection is None:
+    return thisSourceCleanupRC
+
+  thisSourceJobList, thisSourceJobListRC = sqlite_exec_query_read(sqliteConnection, "SELECT * from " + str (SQLITE_TABLE) + " where sourcename='" + str(jobSourceName) + "'")
+
+  if thisSourceJobListRC:
+    print(thisSourceJobList)
+    for index in thisSourceJobList.index:
+      thisSourceJobUrl = thisSourceJobList["Source"][index]
+      if thisSourceJobUrl not in allJobUrls:
+        print(str(thisSourceJobUrl) + " does not exist in " + str(jobSourceName) + ". Let's clean it up from our database")
+        thisSourceCleanupRC = sqlite_exec_query_write(sqliteConnection, "DELETE from " + str (SQLITE_TABLE) + " where joburl ='" + str(thisSourceJobUrl) + "'")
+
+  return thisSourceCleanupRC
+
 @simple_time_tracker(_log)
-def get_job_details(eachJobUrl):
+#def get_job_details(eachJobUrl: str): #1-argument with pool.map
+def get_job_details(eachJobUrl: str, jobSourceName: str):
+  #sourceName = str(eachJobUrl).split("/")[2] #1-argument passed, so extract source from job-url
+  sourceName = jobSourceName #2-arguments passed using partial method, so get it from input
+
   html_text = get_urltext(eachJobUrl)
   if html_text:
     soup = BeautifulSoup(html_text, "html.parser")
@@ -181,7 +213,7 @@ def get_job_details(eachJobUrl):
 
     jobLocation = clean_data("Worldwide")
 
-    jobExistsRC, jobExistsRCCheck, jobAddedOn = sqlite_job_exists(sqliteConnection, SQLITE_TABLE, eachJobUrl, jobTitle, jobLocation)
+    jobExistsRC, jobExistsRCCheck, jobAddedOn = sqlite_job_exists(sqliteConnection, SQLITE_TABLE, eachJobUrl, jobTitle, jobLocation, sourceName)
   
     jobDetails["jobUrl"] = eachJobUrl
     jobDetails["jobTitle"] = jobTitle
@@ -289,6 +321,7 @@ def get_job_list(searchKeyword: str, moreDetails: bool):
   jobDetailsOutput = []
   allJobDetailsOutput = []
   thisSearchKeyword = ""
+  allJobUrls = []
 
   for jobSite in JOB_SITES["jobsites"]:
     jobSiteEnabled = jobSite["enabled"]
@@ -303,6 +336,7 @@ def get_job_list(searchKeyword: str, moreDetails: bool):
     jobUrlHtmlFilter = jobSite["htmlfilter"]
     jobExtendPath = jobSite["extendPath"]
     jobResultsFilter = jobSite["resultsfilter"]
+    jobSourceName = jobSite["name"]
 
     #reset search-keyword for every job-site
     thisSearchKeyword = searchKeyword
@@ -327,25 +361,27 @@ def get_job_list(searchKeyword: str, moreDetails: bool):
     if joburls:
       print(joburls)
 
-      #traditional for loop
-      #for eachJobUrl in joburls:
-      #  jobDetails = get_job_details(eachJobUrl)
-      #  if jobDetails:
-      #    print(jobDetails)
+      #cleanup jobs that do not exist in source
+      jobCleanupRC = obsolete_job_cleanup(jobSourceName, joburls)
 
       #use multi-processing
-      #pool = mp.Pool(mp.cpu_count())
       # create a process pool that uses all cpus
       with mp.Pool() as pool:
-        jobDetailsOutput = pool.map(get_job_details, joburls)
-        #jobDetailsOutput.append(pool.map(get_job_details, joburls))
-        #if jobDetailsOutput and debugMode:
+        #all job-urls in 1 array
+        #allJobUrls.append(eachJobUrl for eachJobUrl in joburls)
+
+        #jobDetailsOutput = pool.map(get_job_details, joburls) #pool-map with 1 argument
+
+        #pass joburls and source to the function
+        jobSourceMapped = partial(get_job_details, jobSourceName=jobSourceName) #pass static argument using partial
+        jobDetailsOutput = pool.map(jobSourceMapped, joburls)
+
         if jobDetailsOutput:
           print(jobDetailsOutput)
           allJobDetailsOutput.append(jobDetail for jobDetail in jobDetailsOutput)
 
         #optional as we use 'with': close the pool
-        pool.close()
+        #pool.close()
     else:
       jobDetailsOutput = [{'Search Results': 'Sorry, no jobs found'}]
 

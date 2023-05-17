@@ -28,6 +28,7 @@ APIKEY_SENDINBLUE=""
 JOB_SITES = {
   "jobsites": [
     {
+      "name": "remotesoftwareengineeringjobs",
       "url": "https://remotesoftwareengineeringjobs.com",
       "urlfilter": "?tech=KEYWORD&location=Worldwide",
       "htmltype": "class",
@@ -37,15 +38,17 @@ JOB_SITES = {
       "enabled": True
     },
     {
+      "name": "remoteok",
       "url": "https://remoteok.com",
       "urlfilter": "remote-KEYWORD-jobs?location=Worldwide",
       "htmltype": "table",
       "htmlfilter": "jobsboard",
       "resultsfilter": None,
       "extendPath": True,
-      "enabled": True 
+      "enabled": True
     },
     { 
+      "name": "opsjobs",
       "url": "https://ops-jobs.com",
       "urlfilter": "?search_keywords=KEYWORD&search_location=Remote(World)",
       "htmltype": "section", 
@@ -56,6 +59,7 @@ JOB_SITES = {
     },
     #data retrieval from this method does not work
     {
+      "name": "workingnomads",
       "url": "https://www.workingnomads.com",
       "urlfilter": "jobs?location=anywhere&tag=KEYWORD",
       "htmltype": "class",
@@ -65,6 +69,7 @@ JOB_SITES = {
       "enabled": False
     },
     {
+      "name": "weworkremotely",
       "url": "https://weworkremotely.com",
       "urlfilter": "remote-jobs/search?term=KEYWORD&sort=any_time&region[]=0",
       "htmltype": "class",
@@ -74,6 +79,7 @@ JOB_SITES = {
       "enabled": True
     },
     {
+      "name": "remoteco",
       "url": "https://remote.co",
       #"urlfilter": "remote-jobs/search/?search_keywords=KEYWORD",
       "urlfilter": "international-remote-jobs/",
@@ -85,6 +91,7 @@ JOB_SITES = {
       "enabled": True
     },
     {
+      "name": "trulyremote",
       "url": "https://trulyremote.co",
       "urlfilter": "?search=KEYWORD",
       #"htmltype": "class",
