@@ -34,6 +34,8 @@ dict_href_links = {}
 
 @simple_time_tracker(_log)
 def get_urltext(url):
+  """ perform GET request to given URL and return the output """
+
   headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0) Gecko/20100101 Firefox/112.0'}
   try:
     s = requests.Session()
@@ -47,28 +49,31 @@ def get_urltext(url):
     return None
 
 @simple_time_tracker(_log)
-#remove special characters
 def clean_data(source_data: str):
+  """ remove special characters from given input """
+
   cleandata1 = (re.sub(r'[^a-zA-Z0-9\s]+', '', source_data)).replace("\n","").replace("Remoteco","").strip()
   cleandata = ' '.join(cleandata1.split()) #remove additional white-space
   return cleandata
 
 def sqlite_create_connection(db_file):
-    """ create a database connection to a SQLite database """
-    conn = None
-    try:
-        conn = sqlite3.connect(db_file)
-        #print(sqlite3.version)
-    except sqlite3.Error as e:
-        print(e)
-    #finally:
-    #    if conn:
-    #        conn.close()
+  """ create a database connection to a SQLite database """
 
-    return conn
+  conn = None
+  try:
+    conn = sqlite3.connect(db_file)
+    #print(sqlite3.version)
+  except sqlite3.Error as e:
+    print(e)
+  #finally:
+  # if conn:
+  #   conn.close()
+
+  return conn
 
 def sqlite_exec_query_write(thisconnection: sqlite3.connect, query: str):
   """ execute write operation query in given SQLite database """
+
   RC = False
   try:
     c = thisconnection.cursor()
@@ -86,6 +91,7 @@ def sqlite_exec_query_write(thisconnection: sqlite3.connect, query: str):
 
 def sqlite_exec_query_read(thisconnection: sqlite3.connect, query: str):
   """ execute read operation query in given SQLite database """
+
   RC = False
   df = pd.DataFrame()
   try:
@@ -107,6 +113,7 @@ def sqlite_exec_query_read(thisconnection: sqlite3.connect, query: str):
 
 def sqlite_job_exists(thisconnection: sqlite3.connect, table: str, url: str, jobname: str, joblocation: str, sourcename: str):
   """ check if given URL exists in given SQLite table """
+
   RC = False
   jobExistsRC = False
 
@@ -139,7 +146,8 @@ def sqlite_job_exists(thisconnection: sqlite3.connect, table: str, url: str, job
   return jobExistsRC, RC, jobAddedOn
 
 def sqlite_prereq_setup():
-  #sqlite prereq: db and table setup
+  """ sqlite prereq: db and table setup """
+
   try:
     #create sqlite connection
     connection = sqlite_create_connection(SQLITE_DATABASE)
@@ -162,10 +170,12 @@ def sqlite_prereq_setup():
 
 def old_job_cleanup(allJobUrls: list, retention: int):
   """delete jobs older than given days"""
+
   return True
 
 def obsolete_job_cleanup(jobSourceName: str, allJobUrls: list):
   """cleanup obsolete job(s) that have been removed from the source sites"""
+
   print("obsolete job cleanup started...")
   print (allJobUrls)
 
@@ -190,6 +200,8 @@ def obsolete_job_cleanup(jobSourceName: str, allJobUrls: list):
 @simple_time_tracker(_log)
 #def get_job_details(eachJobUrl: str): #1-argument with pool.map
 def get_job_details(eachJobUrl: str, jobSourceName: str):
+  """ get job details of individual job-url """
+
   #sourceName = str(eachJobUrl).split("/")[2] #1-argument passed, so extract source from job-url
   sourceName = jobSourceName #2-arguments passed using partial method, so get it from input
 
@@ -229,6 +241,7 @@ def get_job_details(eachJobUrl: str, jobSourceName: str):
 
 @simple_time_tracker(_log)
 def get_job_urls(jobUrl, jobUrlFilter, jobUrlHtmlType, jobUrlHtmlFilter, jobExtendPath, jobResultsFilter):
+  """ get job urls for given job-site along with its config parameters """
   url = jobUrl + "/" + jobUrlFilter
   html_text = get_urltext(url)
   if html_text:
@@ -314,6 +327,7 @@ def get_job_urls(jobUrl, jobUrlFilter, jobUrlHtmlType, jobUrlHtmlFilter, jobExte
   return list_links
 
 def get_job_list(searchKeyword: str, moreDetails: bool):
+  """ based on the given job-search-keyword and job-sites, perform web-scraping. Get job details of each listing and update in db """
   print("given searchKeyword is: " + str(searchKeyword))
   if searchKeyword is None:
     searchKeyword = "devops"
@@ -390,6 +404,7 @@ def get_job_list(searchKeyword: str, moreDetails: bool):
   return df
 
 def html_format_output(dfInput):
+  """ convert given df-input to HTML format """
   #sort values in descending order based on job-added-date
   #dfInput.sort_values(by='jobaddedon', ascending = False, inplace = True) #redundant as we sort using javascript
 
@@ -402,6 +417,7 @@ def html_format_output(dfInput):
   return HTML(dfOutput)
 
 def search_job_list(searchKeyword: str):
+  """ search given job-name in database - obsoleted by javascript for table """
   jobDetails = {}
 
   sqliteConnection = sqlite_prereq_setup()
@@ -416,6 +432,7 @@ def search_job_list(searchKeyword: str):
   return finalOutput
 
 def get_jobs_all():
+  """ Get all jobs from database """
   jobDetails = {}
 
   sqliteConnection = sqlite_prereq_setup()
@@ -427,6 +444,7 @@ def get_jobs_all():
   return currentJobList, currentJobListRC
 
 def show_job_list():
+  """ show job list in HTML format, to display in webpage """
   currentJobList, currentJobListRC = get_jobs_all()
   df = pd.DataFrame.from_records(data = currentJobList)
 
