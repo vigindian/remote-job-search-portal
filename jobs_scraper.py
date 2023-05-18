@@ -448,10 +448,13 @@ def get_jobs_all():
 def show_job_list():
   """ show job list in HTML format, to display in webpage """
 
-  currentJobList, currentJobListRC = get_jobs_all()
-  df = pd.DataFrame.from_records(data = currentJobList)
+  try:
+    currentJobList, currentJobListRC = get_jobs_all()
+    df = pd.DataFrame.from_records(data = currentJobList)
 
-  finalOutput = html_format_output(df)
+    finalOutput = html_format_output(df)
+  except:
+    finalOutput = None
 
   return finalOutput
 
