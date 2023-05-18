@@ -7,7 +7,7 @@ SEARCH_KEYWORD="devops"
 JOB_DETAILS=False #not-used for now
 
 #sqlite parameters
-SQLITE_DATABASE="sqlite_remotejobs.db"
+SQLITE_DATABASE="/home/remotejobs/sqlite_remotejobs.db"
 SQLITE_TABLE="jobdetails"
 
 #your name and email
