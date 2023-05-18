@@ -2,9 +2,7 @@
 
 #forms
 from flask_wtf import FlaskForm
-from wtforms import StringField, BooleanField, SubmitField, IntegerField, RadioField
-#from wtforms.fields.html5 import DateTimeLocalField #deprecated
-from wtforms.fields import DateTimeLocalField
+from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired, ValidationError
 
 import datetime

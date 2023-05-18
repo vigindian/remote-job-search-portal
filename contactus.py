@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 #flask stuff
-from flask import Blueprint, request, render_template, flash, redirect, url_for
+from flask import Blueprint, render_template, url_for
 
 #custom-form class
 from forms import ContactForm
@@ -51,7 +51,6 @@ def uiform():
         else:
           contactusOutput = "Sorry, message sending failed. Please try again later. Thank you."
 
-        #return redirect(url_for('home'))
         return render_template('contactus.html', title='Get in touch', user=username, form=form, output=contactusOutput, appcontact=appcontact, buyMeCoffee=buyMeCoffee)
 
     return render_template('contactus.html', title='Get in touch', user=username, form=form, appcontact=appcontact, buyMeCoffee=buyMeCoffee)
