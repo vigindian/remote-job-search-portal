@@ -12,7 +12,7 @@ from functools import partial
 import sqlite3
 #from sqlite3 import Error as sqliteError
 
-from localutils import simple_time_tracker, _log
+#from localutils import simple_time_tracker, _log
 import localenv
 
 import pandas as pd
@@ -29,10 +29,7 @@ SQLITE_TABLE = localenv.SQLITE_TABLE
 
 JOB_SITES = localenv.JOB_SITES
 
-# create empty dict
-dict_href_links = {}
-
-@simple_time_tracker(_log)
+#@simple_time_tracker(_log)
 def get_urltext(url):
   """ perform GET request to given URL and return the output """
 
@@ -48,7 +45,7 @@ def get_urltext(url):
   except:
     return None
 
-@simple_time_tracker(_log)
+#@simple_time_tracker(_log)
 def clean_data(source_data: str):
   """ remove special characters from given input """
 
@@ -197,7 +194,7 @@ def obsolete_job_cleanup(jobSourceName: str, allJobUrls: list):
 
   return thisSourceCleanupRC
 
-@simple_time_tracker(_log)
+#@simple_time_tracker(_log)
 #def get_job_details(eachJobUrl: str): #1-argument with pool.map
 def get_job_details(eachJobUrl: str, jobSourceName: str):
   """ get job details of individual job-url """
@@ -239,9 +236,10 @@ def get_job_details(eachJobUrl: str, jobSourceName: str):
 
   return jobDetails
 
-@simple_time_tracker(_log)
+#@simple_time_tracker(_log)
 def get_job_urls(jobUrl, jobUrlFilter, jobUrlHtmlType, jobUrlHtmlFilter, jobExtendPath, jobResultsFilter):
   """ get job urls for given job-site along with its config parameters """
+
   url = jobUrl + "/" + jobUrlFilter
   html_text = get_urltext(url)
   if html_text:
@@ -328,7 +326,8 @@ def get_job_urls(jobUrl, jobUrlFilter, jobUrlHtmlType, jobUrlHtmlFilter, jobExte
 
 def get_job_list(searchKeyword: str, moreDetails: bool):
   """ based on the given job-search-keyword and job-sites, perform web-scraping. Get job details of each listing and update in db """
-  print("given searchKeyword is: " + str(searchKeyword))
+
+  #print("given searchKeyword is: " + str(searchKeyword))
   if searchKeyword is None:
     searchKeyword = "devops"
 
@@ -405,12 +404,13 @@ def get_job_list(searchKeyword: str, moreDetails: bool):
 
 def html_format_output(dfInput):
   """ convert given df-input to HTML format """
+
   #sort values in descending order based on job-added-date
   #dfInput.sort_values(by='jobaddedon', ascending = False, inplace = True) #redundant as we sort using javascript
 
   #css style
   outputFormat = localenv.OUTPUT_FORMAT
-  #dfOutput = HTML(outputFormat + dfInput.to_html(classes='df', render_links=True, escape=False, index=False))
+
   #output-format after table for javascript formatting; add <link href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css" rel="stylesheet"> to base.html
   dfOutput = dfInput.to_html(classes='df', table_id="table", render_links=True, escape=False, index=False) + outputFormat
 
@@ -418,6 +418,7 @@ def html_format_output(dfInput):
 
 def search_job_list(searchKeyword: str):
   """ search given job-name in database - obsoleted by javascript for table """
+
   jobDetails = {}
 
   sqliteConnection = sqlite_prereq_setup()
@@ -433,6 +434,7 @@ def search_job_list(searchKeyword: str):
 
 def get_jobs_all():
   """ Get all jobs from database """
+
   jobDetails = {}
 
   sqliteConnection = sqlite_prereq_setup()
@@ -445,6 +447,7 @@ def get_jobs_all():
 
 def show_job_list():
   """ show job list in HTML format, to display in webpage """
+
   currentJobList, currentJobListRC = get_jobs_all()
   df = pd.DataFrame.from_records(data = currentJobList)
 
