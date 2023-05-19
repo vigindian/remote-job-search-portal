@@ -121,16 +121,22 @@ def sqlite_job_exists(thisconnection: sqlite3.connect, table: str, url: str, job
     c.execute("SELECT jobaddedon from " + str (table) + " where joburl='" + str(url) + "'")
     #joburlexists = c.fetchall()
     joburlexists = c.fetchone()
+
     #insert into sqlite if job does not exist
     if not joburlexists:
-      print("Job does not exist in db")
+      if debugMode:
+        print("Job " + str(jobname) + " does not exist in db")
+
       jobAddedOn = datetime.today().strftime('%Y-%m-%d %H:%M')
       newValue = [url, jobname, jobAddedOn, joblocation, sourcename]
       c.execute("INSERT INTO "+ str(table)+ " VALUES(?,?,?,?,?)", newValue)
       thisconnection.commit()
+
     #job already exists in db
     else:
-      print("Job exists in db")
+      if debugMode:
+        print("Job " + str(jobname) + " exists in db")
+
       #extract only the value
       jobAddedOn = joburlexists[0]
       jobExistsRC = True
@@ -166,7 +172,7 @@ def sqlite_prereq_setup():
   return connection
 
 def old_job_cleanup(allJobUrls: list, retention: int):
-  """delete jobs older than given days"""
+  """TODO: delete jobs older than given days"""
 
   return True
 
@@ -174,7 +180,7 @@ def obsolete_job_cleanup(jobSourceName: str, allJobUrls: list):
   """cleanup obsolete job(s) that have been removed from the source sites"""
 
   print("obsolete job cleanup started...")
-  print (allJobUrls)
+  #print (allJobUrls)
 
   thisSourceCleanupRC = False
 
@@ -185,11 +191,11 @@ def obsolete_job_cleanup(jobSourceName: str, allJobUrls: list):
   thisSourceJobList, thisSourceJobListRC = sqlite_exec_query_read(sqliteConnection, "SELECT * from " + str (SQLITE_TABLE) + " where sourcename='" + str(jobSourceName) + "'")
 
   if thisSourceJobListRC:
-    print(thisSourceJobList)
+    #print(thisSourceJobList)
     for index in thisSourceJobList.index:
       thisSourceJobUrl = thisSourceJobList["Source"][index]
       if thisSourceJobUrl not in allJobUrls:
-        print(str(thisSourceJobUrl) + " does not exist in " + str(jobSourceName) + ". Let's clean it up from our database")
+        print(str(thisSourceJobUrl) + " does not exist in source " + str(jobSourceName) + ". Let's clean it up from our database")
         thisSourceCleanupRC = sqlite_exec_query_write(sqliteConnection, "DELETE from " + str (SQLITE_TABLE) + " where joburl ='" + str(thisSourceJobUrl) + "'")
 
   return thisSourceCleanupRC
@@ -291,7 +297,6 @@ def get_job_urls(jobUrl, jobUrlFilter, jobUrlHtmlType, jobUrlHtmlFilter, jobExte
   #print("SECTIONS: " + str(sections))
   for link in sections:
     thisLink = str(link["href"])
-    #thisLink = str(link[0]["href"])
     #print("EACHLINK: " + thisLink)
     if debugMode:
       print(thisLink)
@@ -372,7 +377,8 @@ def get_job_list(searchKeyword: str, moreDetails: bool):
 
     joburls = get_job_urls(jobUrl, jobUrlFilter, jobUrlHtmlType, jobUrlHtmlFilter, jobExtendPath, jobResultsFilter)
     if joburls:
-      print(joburls)
+      if debugMode:
+        print(joburls)
 
       #cleanup jobs that do not exist in source
       jobCleanupRC = obsolete_job_cleanup(jobSourceName, joburls)
@@ -390,7 +396,9 @@ def get_job_list(searchKeyword: str, moreDetails: bool):
         jobDetailsOutput = pool.map(jobSourceMapped, joburls)
 
         if jobDetailsOutput:
-          print(jobDetailsOutput)
+          if debugMode:
+            print(jobDetailsOutput)
+
           allJobDetailsOutput.append(jobDetail for jobDetail in jobDetailsOutput)
 
         #optional as we use 'with': close the pool
