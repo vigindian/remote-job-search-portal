@@ -108,7 +108,7 @@ def sqlite_exec_query_read(thisconnection: sqlite3.connect, query: str):
 
   return df, RC
 
-def sqlite_job_exists(thisconnection: sqlite3.connect, table: str, url: str, jobname: str, joblocation: str, sourcename: str):
+def sqlite_job_exists(thisconnection: sqlite3.connect, table: str, url: str):
   """ check if given URL exists in given SQLite table """
 
   RC = False
@@ -122,31 +122,36 @@ def sqlite_job_exists(thisconnection: sqlite3.connect, table: str, url: str, job
     #joburlexists = c.fetchall()
     joburlexists = c.fetchone()
 
-    #insert into sqlite if job does not exist
-    if not joburlexists:
-      if debugMode:
-        print("Job " + str(jobname) + " does not exist in db")
-
-      jobAddedOn = datetime.today().strftime('%Y-%m-%d %H:%M')
-      newValue = [url, jobname, jobAddedOn, joblocation, sourcename]
-      c.execute("INSERT INTO "+ str(table)+ " VALUES(?,?,?,?,?)", newValue)
-      thisconnection.commit()
-
-    #job already exists in db
-    else:
-      if debugMode:
-        print("Job " + str(jobname) + " exists in db")
-
-      #extract only the value
-      jobAddedOn = joburlexists[0]
+    #job does not exist
+    if joburlexists:
       jobExistsRC = True
-    
+
     RC = True
   except sqlite3.Error as e:
     print(e)
     RC = False
+
+  return jobExistsRC, RC
+
+def sqlite_job_add(thisconnection: sqlite3.connect, table: str, url: str, jobname: str, joblocation: str, sourcename: str):
+  """ add given job in SQLite """
+
+  RC = False
+
+  try:
+    c = thisconnection.cursor()
     
-  return jobExistsRC, RC, jobAddedOn
+    jobAddedOn = datetime.today().strftime('%Y-%m-%d %H:%M')
+    newValue = [url, jobname, jobAddedOn, joblocation, sourcename]
+    c.execute("INSERT INTO "+ str(table)+ " VALUES(?,?,?,?,?)", newValue)
+    thisconnection.commit()
+
+    RC = True
+  except sqlite3.Error as e:
+    print(e)
+    RC = False
+
+  return RC, jobAddedOn
 
 def sqlite_prereq_setup():
   """ sqlite prereq: db and table setup """
@@ -208,12 +213,6 @@ def get_job_details(eachJobUrl: str, jobSourceName: str):
   #sourceName = str(eachJobUrl).split("/")[2] #1-argument passed, so extract source from job-url
   sourceName = jobSourceName #2-arguments passed using partial method, so get it from input
 
-  html_text = get_urltext(eachJobUrl)
-  if html_text:
-    soup = BeautifulSoup(html_text, "html.parser")
-  else:
-    return None
-
   jobDetails = {}
 
   sqliteConnection = sqlite_prereq_setup()
@@ -221,19 +220,35 @@ def get_job_details(eachJobUrl: str, jobSourceName: str):
     return jobDetails
 
   try:
-    #print("Job Details extraction started")
-    jobTitle = soup.find("title").get_text()
+    #check if job already exists in db
+    jobExistsRC, jobExistsRCCheck = sqlite_job_exists(sqliteConnection, SQLITE_TABLE, eachJobUrl)
 
-    jobTitle = clean_data(jobTitle)
+    #add new job into db
+    if jobExistsRCCheck and not jobExistsRC:
+      if debugMode:
+        print("Job Details extraction started for new job: " +str(eachJobUrl))
 
-    jobLocation = clean_data("Worldwide")
+      #get job details from job-url
+      html_text = get_urltext(eachJobUrl)
+      if html_text:
+        soup = BeautifulSoup(html_text, "html.parser")
+      else:
+        return None
 
-    jobExistsRC, jobExistsRCCheck, jobAddedOn = sqlite_job_exists(sqliteConnection, SQLITE_TABLE, eachJobUrl, jobTitle, jobLocation, sourceName)
+      jobTitle = soup.find("title").get_text()
+
+      jobTitle = clean_data(jobTitle)
+
+      jobLocation = clean_data("Worldwide")
+
+      jobExistsRC, jobExistsRCCheck = sqlite_job_exists(sqliteConnection, SQLITE_TABLE, eachJobUrl)
+
+      jobAddRC, jobAddedOn = sqlite_job_add(sqliteConnection, SQLITE_TABLE, eachJobUrl, jobTitle, jobLocation, sourceName)
   
-    jobDetails["jobUrl"] = eachJobUrl
-    jobDetails["jobTitle"] = jobTitle
-    jobDetails["jobAddedOn"] = jobAddedOn
-    jobDetails["jobLocation"] = jobLocation
+      jobDetails["jobUrl"] = eachJobUrl
+      jobDetails["jobTitle"] = jobTitle
+      jobDetails["jobAddedOn"] = jobAddedOn
+      jobDetails["jobLocation"] = jobLocation
   except:
     print("Job Details cannot be extracted")
   finally:
