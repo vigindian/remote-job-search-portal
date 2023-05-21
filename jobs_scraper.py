@@ -204,7 +204,7 @@ def obsolete_job_cleanup(jobSourceName: str, allJobUrls: list):
   if thisSourceJobListRC:
     #print(thisSourceJobList)
     for index in thisSourceJobList.index:
-      thisSourceJobUrl = thisSourceJobList["Source"][index]
+      thisSourceJobUrl = thisSourceJobList["joburl"][index]
       if thisSourceJobUrl not in allJobUrls:
         print(str(thisSourceJobUrl) + " does not exist in source " + str(jobSourceName) + ". Let's clean it up from our database")
         thisSourceCleanupRC = sqlite_exec_query_write(sqliteConnection, "DELETE from " + str (SQLITE_TABLE) + " where joburl ='" + str(thisSourceJobUrl) + "'")
