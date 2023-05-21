@@ -97,8 +97,14 @@ def sqlite_exec_query_read(thisconnection: sqlite3.connect, query: str):
     c.execute(query)
 
     df = pd.DataFrame(c.fetchall(), columns=['joburl','jobname','jobaddedon','location','sourcename'])
-    df = df[['jobname','joburl','location','jobaddedon']] #re-arrange the columns
-    df.rename(columns={'jobname': 'Role', 'joburl': 'Source', 'location': 'Location', 'jobaddedon': 'Posted'}, inplace=True)
+
+    #format role column as link from url column
+    df["Role"] = "<a href='" + df['joburl'] + "' target='_blank' rel='noopener noreferrer' style='text-decoration:none;'>" + df['jobname'] + "</a>"
+
+    df = df[['Role','location','jobaddedon']] #re-arrange the columns
+
+    df.rename(columns={'location': 'Location', 'jobaddedon': 'Posted'}, inplace=True) #rename some columns
+
     #print (df)
 
     RC = True
@@ -434,7 +440,7 @@ def html_format_output(dfInput):
   #css style
   outputFormat = localenv.OUTPUT_FORMAT
 
-  #output-format after table for javascript formatting; add <link href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css" rel="stylesheet"> to base.html
+  #append output-format after table for javascript formatting; add <link href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css" rel="stylesheet"> to base.html
   dfOutput = dfInput.to_html(classes='df', table_id="table", render_links=True, escape=False, index=False) + outputFormat
 
   return HTML(dfOutput)
