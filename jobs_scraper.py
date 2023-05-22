@@ -20,6 +20,9 @@ from IPython.display import HTML
 
 from datetime import datetime
 
+#ignore SettingWithCopyWarning
+pd.options.mode.chained_assignment = None  # default='warn'
+
 debugMode = localenv.DEBUG_MODE
 
 SEARCH_KEYWORD = localenv.SEARCH_KEYWORD
@@ -97,13 +100,6 @@ def sqlite_exec_query_read(thisconnection: sqlite3.connect, query: str):
     c.execute(query)
 
     df = pd.DataFrame(c.fetchall(), columns=['joburl','jobname','jobaddedon','location','sourcename'])
-
-    #format role column as link from url column
-    df["Role"] = "<a href='" + df['joburl'] + "' target='_blank' rel='noopener noreferrer' style='text-decoration:none;'>" + df['jobname'] + "</a>"
-
-    df = df[['Role','location','jobaddedon']] #re-arrange the columns
-
-    df.rename(columns={'location': 'Location', 'jobaddedon': 'Posted'}, inplace=True) #rename some columns
 
     #print (df)
 
@@ -203,6 +199,7 @@ def obsolete_job_cleanup(jobSourceName: str, allJobUrls: list):
 
   if thisSourceJobListRC:
     #print(thisSourceJobList)
+
     for index in thisSourceJobList.index:
       thisSourceJobUrl = thisSourceJobList["joburl"][index]
       if thisSourceJobUrl not in allJobUrls:
@@ -437,6 +434,13 @@ def html_format_output(dfInput):
   #sort values in descending order based on job-added-date
   #dfInput.sort_values(by='jobaddedon', ascending = False, inplace = True) #redundant as we sort using javascript
 
+  #format role column as link from url column
+  dfInput["Role"] = "<a href='" + dfInput['joburl'] + "' target='_blank' rel='noopener noreferrer' style='text-decoration:none;'>" + dfInput['jobname'] + "</a>"
+
+  dfInput = dfInput[['Role','location','jobaddedon']] #re-arrange the columns
+
+  dfInput.rename(columns={'location': 'Location', 'jobaddedon': 'Posted'}, inplace=True) #rename some columns
+
   #css style
   outputFormat = localenv.OUTPUT_FORMAT
 
@@ -455,7 +459,8 @@ def search_job_list(searchKeyword: str):
     return jobDetails
 
   currentJobList, currentJobListRC = sqlite_exec_query_read(sqliteConnection, "SELECT * from " + str (SQLITE_TABLE) + " where jobname like '%" + str(searchKeyword) + "%'")
-  df = pd.DataFrame.from_records(data = currentJobList)
+  #df = pd.DataFrame.from_records(data = currentJobList)
+  df = currentJobList
 
   finalOutput = html_format_output(df)
 
@@ -479,7 +484,8 @@ def show_job_list():
 
   try:
     currentJobList, currentJobListRC = get_jobs_all()
-    df = pd.DataFrame.from_records(data = currentJobList)
+    #df = pd.DataFrame.from_records(data = currentJobList)
+    df = currentJobList
 
     finalOutput = html_format_output(df)
   except:
