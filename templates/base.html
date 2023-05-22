@@ -19,6 +19,17 @@
       <!-- rss -->
       <link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="/rss/" />
 
+
+      <!-- Google tag (gtag.js) -->
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBHMWJPQ6F"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-VBHMWJPQ6F');
+      </script>
+
       <div style="float: left">
         <a href="/remotejobs/">
             <img src="{{url_for('static', filename='images/logo.png')}}" align="left" width="160" length="160" alt="RemoteJobs"/>
@@ -48,7 +59,7 @@
 	{% endblock %}
 
         <footer>
-          <a href="https://github.com/vigindian/remote-job-search-portal#readme" target="_blank" rel="noopener noreferrer" style="text-decoration:none;">Doco</a> | 
+          <a href="https://github.com/lostusmanifestus/remote-jobs-search#readme" target="_blank" rel="noopener noreferrer" style="text-decoration:none;">Doco</a> | 
           <a href="/contactus/" style="text-decoration:none;">Feedback</a>
         </footer>
 
