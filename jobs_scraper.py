@@ -525,7 +525,7 @@ if __name__ == '__main__':
   old_job_cleanup(retentionDays)
 
   #perform job-scraping from multiple sources
-  #get_job_list(searchKeyword, moreDetails)
+  get_job_list(searchKeyword, moreDetails)
 
   #currentJobsInDB = show_job_list()
   #print(currentJobsInDB)
