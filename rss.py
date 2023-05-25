@@ -35,9 +35,9 @@ def rss_subscription():
     #new rss-item for each job
     for index in allJobsDf.index:
       fe = fg.add_entry(order="append")
-      fe.id(allJobsDf["Source"][index])
-      fe.title(allJobsDf["Role"][index])
-      fe.link(href=allJobsDf["Source"][index])
+      fe.id(allJobsDf["joburl"][index])
+      fe.title(allJobsDf["jobname"][index])
+      fe.link(href=allJobsDf["joburl"][index])
 
   response = make_response(fg.rss_str())
   response.headers.set('Content-Type', 'application/rss+xml')

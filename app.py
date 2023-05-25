@@ -32,7 +32,9 @@ application = app
 app.config.from_object(Config)
 
 #sample ui-form
-app.register_blueprint(remotejobsui, url_prefix='/remotejobs')
+app.register_blueprint(remotejobsui, url_prefix='/remotejobs', name='remotejobsui')
+
+app.register_blueprint(remotejobsui, url_prefix='/', name='remotejobshome')
 
 #contactus
 app.register_blueprint(contactusui, url_prefix='/contactus')
@@ -58,11 +60,6 @@ except:
 #    print("This is executed BEFORE each request.")
 
 #We use the route() decorator to tell Flask what URL should trigger the function. methods specify which HTTP methods are allowed. The default is ['GET']
-
-@app.route('/')
-def redirecthome():
-    #return redirect(url_for('home'))
-    return redirect(url_for('remotejobsui.uiform'))
 
 #redirection for home
 @app.route('/home/')

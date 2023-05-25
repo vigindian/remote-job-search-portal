@@ -287,9 +287,13 @@ def get_job_urls(jobUrl, jobUrlFilter, jobUrlHtmlType, jobUrlHtmlFilter, jobExte
     #site specific data extraction
     if "trulyremote.co" in jobUrl:
       mainSectionJson = json.loads(main_section)
-      for remoteJob in mainSectionJson["props"]["pageProps"]["initialListings"]:
-        remoteJobUrl = remoteJob["fields"]["roleApplyURL"]
-        list_links.append(remoteJobUrl)
+      try:
+        for remoteJob in mainSectionJson["props"]["pageProps"]["initialListings"]:
+          remoteJobUrl = remoteJob["fields"]["roleApplyURL"]
+          list_links.append(remoteJobUrl)
+      except KeyError:
+        if debugMode:
+          print("WARN: Unable to extract job details from trulyremote.co")
   elif jobUrlHtmlType == "table":
     main_section = soup.find("table", {"id": jobUrlHtmlFilter})
 
