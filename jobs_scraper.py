@@ -178,15 +178,33 @@ def sqlite_prereq_setup():
 
   return connection
 
-def old_job_cleanup(allJobUrls: list, retention: int):
-  """TODO: delete jobs older than given days"""
+def old_job_cleanup(retention: int):
+  """delete jobs older than given days"""
 
-  return True
+  print("Old job cleanup started...")
+
+  thisCleanupRC = False
+
+  sqliteConnection = sqlite_prereq_setup()
+  if sqliteConnection is None:
+    return thisCleanupRC
+
+  #SELECT * from jobdetails where jobaddedon < datetime('now', '-90 days');
+  thisJobList, thisJobListRC = sqlite_exec_query_read(sqliteConnection, "SELECT * from " + str (SQLITE_TABLE) + " where jobaddedon < datetime('now', '-" + str(retention) + " days')")
+  print(thisJobList)
+
+  if thisJobListRC:
+    for index in thisJobList.index:
+      thisJobUrl = thisJobList["joburl"][index]
+      print(str(thisJobUrl) + " is older than " + str(retention) + " days. Let's clean it up from our database")
+      thisCleanupRC = sqlite_exec_query_write(sqliteConnection, "DELETE from " + str (SQLITE_TABLE) + " where joburl ='" + str(thisJobUrl) + "'")
+
+  return thisCleanupRC
 
 def obsolete_job_cleanup(jobSourceName: str, allJobUrls: list):
   """cleanup obsolete job(s) that have been removed from the source sites"""
 
-  print("obsolete job cleanup started...")
+  print("Obsolete job cleanup started...")
   #print (allJobUrls)
 
   thisSourceCleanupRC = False
@@ -501,7 +519,13 @@ if __name__ == '__main__':
 
   searchKeyword = SEARCH_KEYWORD
   moreDetails = localenv.JOB_DETAILS
-  get_job_list(searchKeyword, moreDetails)
+  retentionDays = localenv.RETENTION_DAYS
+
+  #cleanup old jobs from the database
+  old_job_cleanup(retentionDays)
+
+  #perform job-scraping from multiple sources
+  #get_job_list(searchKeyword, moreDetails)
 
   #currentJobsInDB = show_job_list()
   #print(currentJobsInDB)
