@@ -12,7 +12,9 @@ This is a free remote job search engine portal, that collects remote software jo
 
 ## 2. Code Structure
 
-- Application: main app code is in app.py and other scripts in main directory for different use-cases.
+- Application:
+  - main app code is in app.py and other scripts in main directory for different use-cases.
+  - [jobs_scraper](./jobs_scraper.py): runs job scraping from multiple sites, creates local sqlite db. This script also contains data extraction logic for the UI.
 - templates: html templates.
 - static: images, css and js code.
 
@@ -37,7 +39,12 @@ FLASK_SECRET_KEY="ANYSECRET"
 - Update email recipient details in [contactus.py](./contactus.py).
 
 ## 4. How to run
-- In a development environment, you can run this app:
+- Run [jobs_scraper](./jobs_scraper.py) and in the first-run, it will scrape job details as per your JOB_SITES config in localenv.py:
+```
+./jobs_scraper.py
+```
+
+- Run the UI app:
 ```
 ./app.py
 ```
