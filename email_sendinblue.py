@@ -14,6 +14,9 @@
 import sib_api_v3_sdk
 from sib_api_v3_sdk.rest import ApiException
 
+#environment attributes
+import os
+
 import localenv
 
 def sendEmail(subject: str, senderemail: str, recipientemail: str, recipientname: str, emailcontent: str):
@@ -21,7 +24,7 @@ def sendEmail(subject: str, senderemail: str, recipientemail: str, recipientname
 
   # Instantiate the client\
   configuration = sib_api_v3_sdk.Configuration()
-  configuration.api_key['api-key'] = localenv.APIKEY_SENDINBLUE
+  configuration.api_key['api-key'] = os.environ.get('APIKEY_SENDINBLUE') or localenv.APIKEY_SENDINBLUE
   api_instance = sib_api_v3_sdk.TransactionalEmailsApi(sib_api_v3_sdk.ApiClient(configuration))
 
   subject = subject

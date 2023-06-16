@@ -1,0 +1,8 @@
+debug.log
+sample*
+*.db
+*.bak
+#localenv.py
+*.swp
+.DS_Store
+__pycache__

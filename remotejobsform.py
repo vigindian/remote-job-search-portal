@@ -9,6 +9,9 @@ import json
 #custom-form class
 from forms import RemoteJobsForm
 
+#environment attributes
+import os
+
 #custom config definitions
 from config import Config
 
@@ -26,12 +29,12 @@ httpRCok=200
 httpRCbad=400
 httpRCsvr=500
 
-devopsContact=localenv.CONTACT
+devopsContact = os.environ.get('CONTACT') or localenv.CONTACT
 
 try:
   buyMeCoffee = str(localenv.BUY_ME_COFFEE_URL).split("/")[-1]
 except:
-  buyMeCoffee=None
+  buyMeCoffee = None
 
 @remotejobsui.route('/', methods=['GET', 'POST'])
 def uiform():

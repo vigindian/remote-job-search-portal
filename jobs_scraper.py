@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+#web scraping
 from bs4 import BeautifulSoup
 import requests
 
@@ -9,26 +10,32 @@ import re #regex
 import multiprocessing as mp
 from functools import partial
 
+#app-db
 import sqlite3
 #from sqlite3 import Error as sqliteError
 
 #from localutils import simple_time_tracker, _log
 import localenv
 
+#data manipulation
 import pandas as pd
 from IPython.display import HTML
 
 from datetime import datetime
 
+#environment attributes
+import os
+
 #ignore SettingWithCopyWarning
 pd.options.mode.chained_assignment = None  # default='warn'
 
-debugMode = localenv.DEBUG_MODE
+debugModeInput = os.environ.get('DEBUG_MODE') or localenv.DEBUG_MODE
+debugMode = str(debugModeInput).lower() in ['true']
 
-SEARCH_KEYWORD = localenv.SEARCH_KEYWORD
+SEARCH_KEYWORD = os.environ.get('SEARCH_KEYWORD') or localenv.SEARCH_KEYWORD
 
-SQLITE_DATABASE = localenv.SQLITE_DATABASE
-SQLITE_TABLE = localenv.SQLITE_TABLE
+SQLITE_DATABASE = os.environ.get('SQLITE_DATABASE') or localenv.SQLITE_DATABASE
+SQLITE_TABLE = os.environ.get('SQLITE_TABLE') or localenv.SQLITE_TABLE
 
 JOB_SITES = localenv.JOB_SITES
 
@@ -519,7 +526,7 @@ if __name__ == '__main__':
 
   searchKeyword = SEARCH_KEYWORD
   moreDetails = localenv.JOB_DETAILS
-  retentionDays = localenv.RETENTION_DAYS
+  retentionDays = os.environ.get('RETENTION_DAYS') or localenv.RETENTION_DAYS
 
   #cleanup old jobs from the database
   old_job_cleanup(retentionDays)

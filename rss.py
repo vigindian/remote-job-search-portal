@@ -8,8 +8,6 @@ from feedgen.feed import FeedGenerator
 
 import pandas as pd
 
-import localenv
-
 from jobs_scraper import get_jobs_all 
 
 #form route

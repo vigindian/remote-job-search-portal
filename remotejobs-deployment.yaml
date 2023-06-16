@@ -1,0 +1,64 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: remotejobs-deployment
+  labels:
+    app: remotejobsui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: remotejobsui
+  template:
+    metadata:
+      labels:
+        app: remotejobsui
+    spec:
+      containers:
+        - name: remotejobsui
+          image: flask-remotejobs:latest
+          # use locally built image (https://medium.com/swlh/how-to-run-locally-built-docker-images-in-kubernetes-b28fbc32cc1d)
+          imagePullPolicy: Never
+          resources:
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 4015
+            # "lostus.manifestus@gmail.com"
+          env:
+            - name: CONTACT
+              value: "kansvignesh@gmail.com"
+            - name: CONTACTNAME
+              value: "LM"
+            - name: FLASK_DEBUG
+              value: "False"
+            - name: FLASK_JSON_PRETTYPRINT
+              value: "True"
+            - name: DEBUG_MODE
+              value: "False"
+            - name: SEARCH_KEYWORD
+              value: "devops"
+            - name: SQLITE_DATABASE
+              value: "sqlite_remotejobs.db"
+            - name: SQLITE_TABLE
+              value: "jobdetails"
+            - name: RETENTION_DAYS
+              value: "90"
+            #- name: APIKEY_SENDINBLUE
+            #  value: ""
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: remotejobs-service
+spec:
+  selector:
+    app: remotejobsui
+  ports:
+    - port: 4015
+      targetPort: 4015
+      protocol: TCP
+  type: LoadBalancer

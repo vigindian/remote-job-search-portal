@@ -12,6 +12,9 @@ import localenv
 
 from email_sendinblue import sendEmail
 
+#environment attributes
+import os
+
 #ui-form route
 contactusui = Blueprint('contactusui', __name__)
 
@@ -20,7 +23,7 @@ httpRCok=200
 httpRCbad=400
 httpRCsvr=500
 
-appcontact=localenv.CONTACT
+appContact = os.environ.get('CONTACT') or localenv.CONTACT
 
 try:
   buyMeCoffee = str(localenv.BUY_ME_COFFEE_URL).split("/")[-1]
@@ -42,8 +45,8 @@ def uiform():
 
         #app-config
         emailsubject = "Remote Jobs Search Engine"
-        recipientname = localenv.CONTACTNAME
-        recipientemail = localenv.CONTACT
+        recipientname = os.environ.get('CONTACTNAME') or localenv.CONTACTNAME
+        recipientemail = appContact
 
         sendEmailRC = sendEmail(emailsubject, senderemail_sub, recipientemail, recipientname, message_sub)
         if (sendEmailRC):
@@ -51,6 +54,6 @@ def uiform():
         else:
           contactusOutput = "Sorry, message sending failed. Please try again later. Thank you."
 
-        return render_template('contactus.html', title='Get in touch', user=username, form=form, output=contactusOutput, appcontact=appcontact, buyMeCoffee=buyMeCoffee)
+        return render_template('contactus.html', title='Get in touch', user=username, form=form, output=contactusOutput, appcontact=appContact, buyMeCoffee=buyMeCoffee)
 
-    return render_template('contactus.html', title='Get in touch', user=username, form=form, appcontact=appcontact, buyMeCoffee=buyMeCoffee)
+    return render_template('contactus.html', title='Get in touch', user=username, form=form, appcontact=appContact, buyMeCoffee=buyMeCoffee)

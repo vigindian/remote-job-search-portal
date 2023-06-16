@@ -60,6 +60,59 @@ python3 app.py
 ## 4.1. Sample Run
 ![plot](./image-remote-job-search-portal.png)
 
+## 4.2. K8s Setup
+- Ensure localenv.py is available in local directory.
+- If using minikube, run this to enable minikube's docker daemon:
+```
+eval $(minikube -p minikube docker-env)
+```
+
+- Build docker-image using Dockerfile, using the minikube's docker daemon:
+```
+docker build -t flask-remotejobs .
+```
+
+- Create the kubectl deployment
+```
+kubectl create -f remotejobs-deployment.yaml
+```
+
+- Validate if the pod is running
+```
+#deployments
+kubectl get deployments
+
+#services
+kubectl get services
+
+#pods
+kubectl get pods
+```
+
+### 4.2.1 Minikube
+- If app is run via k8s, it is only accessible internally within the k8s network. If you run k8s via minikube, you can expose the app via this minikube command:
+```
+minikube service remotejobs-service
+```
+
+- Sample output:
+```
+$ minikube service remotejobs-service
+|-----------|--------------------|-------------|---------------------------|
+| NAMESPACE |        NAME        | TARGET PORT |            URL            |
+|-----------|--------------------|-------------|---------------------------|
+| default   | remotejobs-service |        4015 | http://192.168.58.2:31432 |
+|-----------|--------------------|-------------|---------------------------|
+🏃  Starting tunnel for service remotejobs-service.
+|-----------|--------------------|-------------|------------------------|
+| NAMESPACE |        NAME        | TARGET PORT |          URL           |
+|-----------|--------------------|-------------|------------------------|
+| default   | remotejobs-service |             | http://127.0.0.1:63704 |
+|-----------|--------------------|-------------|------------------------|
+🎉  Opening service default/remotejobs-service in default browser...
+❗  Because you are using a Docker driver on darwin, the terminal needs to be open to run it.
+```
+
 ## 5. Apache WSGI Setup
 In a production environment, it is recommended to run a flask application via Apache or a similar application:
 - Install and configure apache.

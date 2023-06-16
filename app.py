@@ -20,6 +20,9 @@ from rss import rss
 #local-utilities
 from localutils import getUsername
 
+#environment attributes
+import os
+
 import localenv
 
 #create an instance of the flask class
@@ -47,7 +50,7 @@ httpRCok = 200
 httpRCbad = 400
 httpRCnotfound = 404
 
-devopsContact=localenv.CONTACT
+appContact = os.environ.get('CONTACT') or localenv.CONTACT
 
 try:
   buyMeCoffee = str(localenv.BUY_ME_COFFEE_URL).split("/")[-1]
@@ -65,7 +68,7 @@ except:
 @app.route('/home/')
 def home():
     #username = getUsername()
-    #return render_template('index.html', title='Home', user=username, appcontact=devopsContact, buyMeCoffee=buyMeCoffee)
+    #return render_template('index.html', title='Home', user=username, appcontact=appContact, buyMeCoffee=buyMeCoffee)
     return redirect(url_for('remotejobsui.uiform'))
 
 @app.errorhandler(404)
@@ -73,7 +76,7 @@ def page_not_found(e):
     #return "<h1>404</h1><p>The resource could not be found.</p>", 404
     username = getUsername()
     #ensure http-rc is set to 404
-    return render_template('error404.html', title='PageNotFound', user=username, appcontact=devopsContact, buyMeCoffee=buyMeCoffee), httpRCnotfound
+    return render_template('error404.html', title='PageNotFound', user=username, appcontact=appContact, buyMeCoffee=buyMeCoffee), httpRCnotfound
 
 #run only when executed in the main file and not when it is imported in some other file
 if __name__ == '__main__':
